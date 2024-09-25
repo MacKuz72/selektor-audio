@@ -18,6 +18,7 @@
                 "/home/maciej/.arduino15/packages/esp32/hardware/esp32/3.0.4/libraries/Wire/src",
                 "/home/maciej/Arduino/libraries/RTClib/src",
                 "/home/maciej/Arduino/libraries/Adafruit_BusIO",
+                "/home/maciej/Arduino/libraries/TM1638plus/src",
                 "/home/maciej/.arduino15/packages/esp32/hardware/esp32/3.0.4/libraries/SPI/src",
                 "/home/maciej/.arduino15/packages/esp32/tools/esp-x32/2302/xtensa-esp32-elf/include/c++/12.2.0",
                 "/home/maciej/.arduino15/packages/esp32/tools/esp-x32/2302/xtensa-esp32-elf/include/c++/12.2.0/xtensa-esp32-elf",
