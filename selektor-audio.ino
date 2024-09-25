@@ -4,8 +4,8 @@
 #include <TM1638plus.h> // include the library
 
 #define STROBE_TM 4
-#define CLOCK_TM 6
-#define DIO_TM 7
+#define CLOCK_TM 16
+#define DIO_TM 17
 
 const long intervalButton = 200;   // interval to read button (milliseconds)
 const long intervalDisplay = 1000; // interval at which to change display (milliseconds)
@@ -47,7 +47,7 @@ void setup()
     tm.displayText("00000000");
     Serial.begin(38400);
     delay(100);
-    Serial.println("--Comms UP--TM1638plus_BUTTON_Model1.ino--");
+    Serial.println("selektor-audio");
     delay(5000);
 }
 
