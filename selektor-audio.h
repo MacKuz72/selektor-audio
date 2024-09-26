@@ -1,6 +1,17 @@
 // kody pilota
 // mały czarny
 
+//definicje pinów
+#define PIN1 34
+#define PIN2 35
+#define PIN3 32
+#define PIN4 33
+#define PIN5 25
+#define PIN6 26
+#define PIN7 27
+#define PIN8 14
+
+
 //#define pilot_maly_czarny
 
 

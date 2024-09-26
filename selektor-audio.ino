@@ -43,6 +43,23 @@ const int irReceiverPin = 12;
 void setup()
 {
 
+    pinMode(PIN1, OUTPUT);
+    pinMode(PIN2, OUTPUT);
+    pinMode(PIN3, OUTPUT);
+    pinMode(PIN4, OUTPUT);
+    pinMode(PIN5, OUTPUT);
+    pinMode(PIN6, OUTPUT);
+    pinMode(PIN7, OUTPUT);
+    pinMode(PIN8, OUTPUT);
+    digitalWrite(PIN1, HIGH);
+    digitalWrite(PIN2, HIGH);
+    digitalWrite(PIN3, HIGH);
+    digitalWrite(PIN4, HIGH);
+    digitalWrite(PIN5, HIGH);
+    digitalWrite(PIN6, HIGH);
+    digitalWrite(PIN7, HIGH);
+    digitalWrite(PIN8, HIGH);
+
     Serial.begin(115200);
     pinMode(13, OUTPUT); // Zakładamy, że używasz pinu GPIO 13
     digitalWrite(13, HIGH);
@@ -421,8 +438,7 @@ void Brightness(void)
             {
                 MainMode = 2;
             }
-            
-        }
+                }
     }
 }
 
