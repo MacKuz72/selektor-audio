@@ -3,6 +3,7 @@
 #include <time.h>
 #include <TM1638plus.h> // include the library
 #include <IRremote.hpp> // include the library
+#include <selektor-audio.h>
 
 #define STROBE_TM 4
 #define CLOCK_TM 16
@@ -121,49 +122,49 @@ void loop()
             tm.setLEDs(0x0000); // all leds off
             tm.setLED(0, 1);
             SelectAudio = 1;
-            sprintf(opisAudio, "PHO ");
+            sprintf(opisAudio, LABEL1);
             break;
         case 2: // SW2
             tm.setLEDs(0x0000);
             tm.setLED(1, 1);
             SelectAudio = 2;
-            sprintf(opisAudio, "CD1 ");
+            sprintf(opisAudio, LABEL2);
             break;
         case 4: // SW3
             tm.setLEDs(0x0000);
             tm.setLED(2, 1);
             SelectAudio = 3;
-            sprintf(opisAudio, "CD2 ");
+            sprintf(opisAudio, LABEL3);
             break;
         case 8: // SW4
             tm.setLEDs(0x0000);
             tm.setLED(3, 1);
             SelectAudio = 4;
-            sprintf(opisAudio, "TAP ");
+            sprintf(opisAudio, LABEL4);
             break;
         case 16: // SW5
             tm.setLEDs(0x0000);
             tm.setLED(4, 1);
             SelectAudio = 5;
-            sprintf(opisAudio, "RPI ");
+            sprintf(opisAudio, LABEL5);
             break;
         case 32: // SW6
             tm.setLEDs(0x0000);
             tm.setLED(5, 1);
             SelectAudio = 6;
-            sprintf(opisAudio, "BT  ");
+            sprintf(opisAudio, LABEL6);
             break;
         case 64: // SW7
             tm.setLEDs(0x0000);
             tm.setLED(6, 1);
             SelectAudio = 7;
-            sprintf(opisAudio, "AU1 ");
+            sprintf(opisAudio, LABEL7);
             break;
         case 128: // SW8
             tm.setLEDs(0x0000);
             tm.setLED(7, 1);
             SelectAudio = 8;
-            sprintf(opisAudio, "AU2 ");
+            sprintf(opisAudio, LABEL8);
             break;
         case 129:
             MainMode = 8;
@@ -207,70 +208,74 @@ void loop()
         /*
          * Finally, check the received data and perform actions according to the received command
          */
-        if (IrReceiver.decodedIRData.command == 0xC)
+        if (IrReceiver.decodedIRData.command == R_BT1)
         {
             tm.setLEDs(0x0000); // all leds off
             tm.setLED(0, 1);
             SelectAudio = 1;
-            sprintf(opisAudio, "PHO ");
+            sprintf(opisAudio, LABEL1);
         }
-        else if (IrReceiver.decodedIRData.command == 0x18)
+        else if (IrReceiver.decodedIRData.command == R_BT2)
         {
             // do something else
             tm.setLEDs(0x0000);
             tm.setLED(1, 1);
             SelectAudio = 2;
-            sprintf(opisAudio, "CD1 ");
+            sprintf(opisAudio, LABEL2);
         }
-        else if (IrReceiver.decodedIRData.command == 0x5E)
+        else if (IrReceiver.decodedIRData.command == R_BT3)
         {
             // do something else
             tm.setLEDs(0x0000);
             tm.setLED(2, 1);
             SelectAudio = 3;
-            sprintf(opisAudio, "CD2 ");
+            sprintf(opisAudio, LABEL3);
         }
-        else if (IrReceiver.decodedIRData.command == 0x8)
+        else if (IrReceiver.decodedIRData.command == R_BT4)
         {
             // do something else
             tm.setLEDs(0x0000);
             tm.setLED(3, 1);
             SelectAudio = 4;
-            sprintf(opisAudio, "TAP ");
+            sprintf(opisAudio, LABEL4);
         }
-        else if (IrReceiver.decodedIRData.command == 0x1C)
+        else if (IrReceiver.decodedIRData.command == R_BT5)
         {
             // do something else
             tm.setLEDs(0x0000);
             tm.setLED(4, 1);
             SelectAudio = 5;
-            sprintf(opisAudio, "RPI ");
+            sprintf(opisAudio, LABEL5);
         }
-        else if (IrReceiver.decodedIRData.command == 0x5A)
+        else if (IrReceiver.decodedIRData.command == R_BT6)
         {
             // do something else
             tm.setLEDs(0x0000);
             tm.setLED(5, 1);
             SelectAudio = 6;
-            sprintf(opisAudio, "BT  ");
+            sprintf(opisAudio, LABEL6);
         }
-        else if (IrReceiver.decodedIRData.command == 0x42)
+        else if (IrReceiver.decodedIRData.command == R_BT7)
         {
             // do something else
             tm.setLEDs(0x0000);
             tm.setLED(6, 1);
             SelectAudio = 7;
-            sprintf(opisAudio, "AU1 ");
+            sprintf(opisAudio, LABEL7);
         }
-        else if (IrReceiver.decodedIRData.command == 0x52)
+        else if (IrReceiver.decodedIRData.command == R_BT8)
         {
             // do something else
             tm.setLEDs(0x0000);
             tm.setLED(7, 1);
             SelectAudio = 8;
-            sprintf(opisAudio, "AU2 ");
+            sprintf(opisAudio, LABEL8);
         }
-
+        else if (IrReceiver.decodedIRData.command == R_SET)
+        {
+            MainMode = 8;
+            SettingsMenuDisplay();
+        }
     }
 }
 
@@ -325,8 +330,13 @@ void SettingsMenuDisplay(void)
         if (MainMode == 2)
             break;
     }
-    Serial.println("DUPA");
-    Serial.println(MainMode);
+    if (IrReceiver.decode())
+    {
+        if (IrReceiver.decodedIRData.command == R_BRG)
+        {
+                 Brightness();
+        }
+    }
 }
 
 void Brightness(void)
