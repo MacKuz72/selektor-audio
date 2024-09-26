@@ -409,6 +409,19 @@ void Brightness(void)
                     bright = 0x00;
                 }
             }
+            else if (IrReceiver.decodedIRData.command == R_BTMINUS)
+            {
+                bright--;
+                if (bright == 0xFF)
+                {
+                    bright = 0x07;
+                }
+            }
+            else if (IrReceiver.decodedIRData.command == R_SAVE)
+            {
+                MainMode = 2;
+            }
+            
         }
     }
 }

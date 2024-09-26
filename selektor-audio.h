@@ -1,10 +1,10 @@
 // kody pilota
 // mały czarny
 
-#define pilot_maly_czarny
+//#define pilot_maly_czarny
 
 
-#if define pilot_maly_czarny
+#if defined pilot_maly_czarny
 #define R_BT1 0xC  // button 1
 #define R_BT2 0x18 // button 2
 #define R_BT3 0x5E // button 3
@@ -16,18 +16,22 @@
 #define R_SET 0x9  // button EQ
 #define R_BRG 0x47  // button CH+
 #define R_BTPLUS 0x15  // button +
+#define R_BTMINUS 0x9  // button VOL- do korekty
+#define R_SAVE 0x18  // button + do korekty
 #else
 #define R_BT1 0xC  // button 1
-#define R_BT2 0x18 // button 2
-#define R_BT3 0x5E // button 3
-#define R_BT4 0x8  // button 4
-#define R_BT5 0x1C // button 5
-#define R_BT6 0x5A // button 6
-#define R_BT7 0x42 // button 7
-#define R_BT8 0x52 // button 8
-#define R_SET 0x9  // button EQ
-#define R_BRG 0x47  // button CH+
-#define R_BTPLUS 0x15  // button +
+#define R_BT2 0xD // button 2
+#define R_BT3 0xE // button 3
+#define R_BT4 0x10  // button 4
+#define R_BT5 0x11 // button 5
+#define R_BT6 0x12 // button 6
+#define R_BT7 0x14 // button 7
+#define R_BT8 0x15 // button 8
+#define R_SET 0x1F  // button MENU
+#define R_BRG 0x0  // button MODE
+#define R_BTPLUS 0xB  // button VOL+
+#define R_BTMINUS 0x9  // button VOL-
+#define R_SAVE 0x2  // button +
 #endif
 
 // nazwy źródeł
