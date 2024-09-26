@@ -2,6 +2,7 @@
 #include <RTClib.h>
 #include <time.h>
 #include <TM1638plus.h> // include the library
+#include <IRremote.hpp> // include the library
 
 #define STROBE_TM 4
 #define CLOCK_TM 16
@@ -36,10 +37,14 @@ uint8_t buttonsRead(void);
 void SetTime(void);
 void SetDate(uint8_t Hours, uint8_t Minutes);
 
+const int irReceiverPin = 12;
+
 void setup()
 {
 
     Serial.begin(115200);
+    pinMode(13, OUTPUT); // Zakładamy, że używasz pinu GPIO 13
+    digitalWrite(13, HIGH);
 
     if (!rtc.begin())
     {
@@ -68,12 +73,20 @@ void setup()
         godzina = 0;
     if (minuta == 59)
         minuta = 0;
+
+    sprintf(opisAudio, "SEL ");
     sprintf(workstr, "%s%02d.%02d", opisAudio, godzina, minuta);
     tm.displayText(workstr);
 
     Serial.println("selektor-audio");
     Serial.println(workstr);
-    delay(5000);
+
+    IrReceiver.begin(irReceiverPin, ENABLE_LED_FEEDBACK);
+
+    Serial.print(F("Ready to receive IR signals of protocols: "));
+    printActiveIRProtocols(&Serial);
+
+    // delay(5000);
 }
 
 void loop()
@@ -96,10 +109,11 @@ void loop()
 
         last_loop_time = millis();
     }
+
     uint8_t buttonsValue = buttonsRead();
     if (buttonsValue != 0)
     {
-        updateDisplay(buttonsValue);
+        // updateDisplay(buttonsValue);
 
         switch (buttonsValue)
         {
@@ -155,10 +169,108 @@ void loop()
             MainMode = 8;
             SettingsMenuDisplay();
             break;
+        case 192:
+            MainMode = 2;
+            sprintf(workstr, "%02d.%02d.%02d", now.day(), now.month(), now.year());
+            Serial.println(workstr);
+            Serial.println(now.timestamp(DateTime::TIMESTAMP_DATE));
+            tm.displayText(workstr);
+            delay(5000);
+            break;
 
         default:
             break;
         }
+    }
+
+    if (IrReceiver.decode())
+    {
+
+        /*
+         * Print a summary of received data
+         */
+        if (IrReceiver.decodedIRData.protocol == UNKNOWN)
+        {
+            Serial.println(F("Received noise or an unknown (or not yet enabled) protocol"));
+            // We have an unknown protocol here, print extended info
+            IrReceiver.printIRResultRawFormatted(&Serial, true);
+            IrReceiver.resume(); // Do it here, to preserve raw data for printing with printIRResultRawFormatted()
+        }
+        else
+        {
+            IrReceiver.resume(); // Early enable receiving of the next IR frame
+            IrReceiver.printIRResultShort(&Serial);
+            IrReceiver.printIRSendUsage(&Serial);
+        }
+        Serial.println();
+
+        /*
+         * Finally, check the received data and perform actions according to the received command
+         */
+        if (IrReceiver.decodedIRData.command == 0xC)
+        {
+            tm.setLEDs(0x0000); // all leds off
+            tm.setLED(0, 1);
+            SelectAudio = 1;
+            sprintf(opisAudio, "PHO ");
+        }
+        else if (IrReceiver.decodedIRData.command == 0x18)
+        {
+            // do something else
+            tm.setLEDs(0x0000);
+            tm.setLED(1, 1);
+            SelectAudio = 2;
+            sprintf(opisAudio, "CD1 ");
+        }
+        else if (IrReceiver.decodedIRData.command == 0x5E)
+        {
+            // do something else
+            tm.setLEDs(0x0000);
+            tm.setLED(2, 1);
+            SelectAudio = 3;
+            sprintf(opisAudio, "CD2 ");
+        }
+        else if (IrReceiver.decodedIRData.command == 0x8)
+        {
+            // do something else
+            tm.setLEDs(0x0000);
+            tm.setLED(3, 1);
+            SelectAudio = 4;
+            sprintf(opisAudio, "TAP ");
+        }
+        else if (IrReceiver.decodedIRData.command == 0x1C)
+        {
+            // do something else
+            tm.setLEDs(0x0000);
+            tm.setLED(4, 1);
+            SelectAudio = 5;
+            sprintf(opisAudio, "RPI ");
+        }
+        else if (IrReceiver.decodedIRData.command == 0x5A)
+        {
+            // do something else
+            tm.setLEDs(0x0000);
+            tm.setLED(5, 1);
+            SelectAudio = 6;
+            sprintf(opisAudio, "BT  ");
+        }
+        else if (IrReceiver.decodedIRData.command == 0x42)
+        {
+            // do something else
+            tm.setLEDs(0x0000);
+            tm.setLED(6, 1);
+            SelectAudio = 7;
+            sprintf(opisAudio, "AU1 ");
+        }
+        else if (IrReceiver.decodedIRData.command == 0x52)
+        {
+            // do something else
+            tm.setLEDs(0x0000);
+            tm.setLED(7, 1);
+            SelectAudio = 8;
+            sprintf(opisAudio, "AU2 ");
+        }
+
     }
 }
 
@@ -330,17 +442,8 @@ void SetDate(uint8_t Hours, uint8_t Minutes)
             break;
         if (MainMode == 3)
         {
-            //   time_t t;
-            //   tmElements_t tmx;
-            //   tmx.Year = Years;
-            //   tmx.Month = Months;
-            //   tmx.Day = Days;
-            //   tmx.Hour = Hours;
-            //   tmx.Minute = Minutes;
-            //   tmx.Second = 0;
-            //   t = makeTime(tmx);
-            //   RTC.set(t);        // use the time_t value to ensure correct weekday is set
-            //   setTime(t);
+
+            rtc.adjust(DateTime(Years, Months, Days, Hours, Minutes, 0));
             tm.displayText("tIn SEt ");
             delay(intervalDisplay);
             break;
