@@ -15,6 +15,7 @@
 #define R_BT8 0x52 // button 8
 #define R_SET 0x9  // button EQ
 #define R_BRG 0x47  // button CH+
+#define R_BTPLUS 0x15  // button +
 #else
 #define R_BT1 0xC  // button 1
 #define R_BT2 0x18 // button 2
@@ -26,6 +27,7 @@
 #define R_BT8 0x52 // button 8
 #define R_SET 0x9  // button EQ
 #define R_BRG 0x47  // button CH+
+#define R_BTPLUS 0x15  // button +
 #endif
 
 // nazwy źródeł

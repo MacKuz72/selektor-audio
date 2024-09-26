@@ -326,15 +326,32 @@ void SettingsMenuDisplay(void)
             Brightness();
             break;
         }
-        Serial.println(buttons);
+        // Serial.println(buttons);
         if (MainMode == 2)
             break;
-    }
-    if (IrReceiver.decode())
-    {
-        if (IrReceiver.decodedIRData.command == R_BRG)
+
+        if (IrReceiver.decode())
         {
-                 Brightness();
+
+            if (IrReceiver.decodedIRData.protocol == UNKNOWN)
+            {
+                // Serial.println(F("Received noise or an unknown (or not yet enabled) protocol"));
+                // We have an unknown protocol here, print extended info
+                // IrReceiver.printIRResultRawFormatted(&Serial, true);
+                IrReceiver.resume(); // Do it here, to preserve raw data for printing with printIRResultRawFormatted()
+            }
+            else
+            {
+                IrReceiver.resume(); // Early enable receiving of the next IR frame
+                IrReceiver.printIRResultShort(&Serial);
+                IrReceiver.printIRSendUsage(&Serial);
+            }
+            Serial.println();
+
+            if (IrReceiver.decodedIRData.command == R_BRG)
+            {
+                Brightness();
+            }
         }
     }
 }
@@ -366,6 +383,33 @@ void Brightness(void)
         tm.displayHex(7, bright);
         if (MainMode == 2)
             break;
+
+        if (IrReceiver.decode())
+        {
+
+            if (IrReceiver.decodedIRData.protocol == UNKNOWN)
+            {
+                // Serial.println(F("Received noise or an unknown (or not yet enabled) protocol"));
+                // We have an unknown protocol here, print extended info
+                // IrReceiver.printIRResultRawFormatted(&Serial, true);
+                IrReceiver.resume(); // Do it here, to preserve raw data for printing with printIRResultRawFormatted()
+            }
+            else
+            {
+                IrReceiver.resume(); // Early enable receiving of the next IR frame
+                IrReceiver.printIRResultShort(&Serial);
+                IrReceiver.printIRSendUsage(&Serial);
+            }
+            Serial.println();
+            if (IrReceiver.decodedIRData.command == R_BTPLUS)
+            {
+                bright++;
+                if (bright == 0x08)
+                {
+                    bright = 0x00;
+                }
+            }
+        }
     }
 }
 
