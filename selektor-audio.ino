@@ -37,6 +37,7 @@ void Brightness(void);
 uint8_t buttonsRead(void);
 void SetTime(void);
 void SetDate(uint8_t Hours, uint8_t Minutes);
+void ustawWyjscie(uint8_t kanal);
 
 const int irReceiverPin = 12;
 
@@ -294,6 +295,107 @@ void loop()
             SettingsMenuDisplay();
         }
     }
+    ustawWyjscie(SelectAudio);
+}
+
+void ustawWyjscie(uint8_t kanal)
+{
+    switch (kanal)
+    {
+    case 1:
+        digitalWrite(PIN1, LOW);
+        digitalWrite(PIN2, HIGH);
+        digitalWrite(PIN3, HIGH);
+        digitalWrite(PIN4, HIGH);
+        digitalWrite(PIN5, HIGH);
+        digitalWrite(PIN6, HIGH);
+        digitalWrite(PIN7, HIGH);
+        digitalWrite(PIN8, HIGH);
+        break;
+    case 2:
+        digitalWrite(PIN1, HIGH);
+        digitalWrite(PIN2, LOW);
+        digitalWrite(PIN3, HIGH);
+        digitalWrite(PIN4, HIGH);
+        digitalWrite(PIN5, HIGH);
+        digitalWrite(PIN6, HIGH);
+        digitalWrite(PIN7, HIGH);
+        digitalWrite(PIN8, HIGH);
+        break;
+    case 3:
+        digitalWrite(PIN1, HIGH);
+        digitalWrite(PIN2, HIGH);
+        digitalWrite(PIN3, LOW);
+        digitalWrite(PIN4, HIGH);
+        digitalWrite(PIN5, HIGH);
+        digitalWrite(PIN6, HIGH);
+        digitalWrite(PIN7, HIGH);
+        digitalWrite(PIN8, HIGH);
+        break;
+    case 4:
+        digitalWrite(PIN1, HIGH);
+        digitalWrite(PIN2, HIGH);
+        digitalWrite(PIN3, HIGH);
+        digitalWrite(PIN4, LOW);
+        digitalWrite(PIN5, HIGH);
+        digitalWrite(PIN6, HIGH);
+        digitalWrite(PIN7, HIGH);
+        digitalWrite(PIN8, HIGH);
+        break;
+    case 5:
+        digitalWrite(PIN1, HIGH);
+        digitalWrite(PIN2, HIGH);
+        digitalWrite(PIN3, HIGH);
+        digitalWrite(PIN4, HIGH);
+        digitalWrite(PIN5, LOW);
+        digitalWrite(PIN6, HIGH);
+        digitalWrite(PIN7, HIGH);
+        digitalWrite(PIN8, HIGH);
+        break;
+    case 6:
+        digitalWrite(PIN1, HIGH);
+        digitalWrite(PIN2, HIGH);
+        digitalWrite(PIN3, HIGH);
+        digitalWrite(PIN4, HIGH);
+        digitalWrite(PIN5, HIGH);
+        digitalWrite(PIN6, LOW);
+        digitalWrite(PIN7, HIGH);
+        digitalWrite(PIN8, HIGH);
+        break;
+    case 7:
+        digitalWrite(PIN1, HIGH);
+        digitalWrite(PIN2, HIGH);
+        digitalWrite(PIN3, HIGH);
+        digitalWrite(PIN4, HIGH);
+        digitalWrite(PIN5, HIGH);
+        digitalWrite(PIN6, HIGH);
+        digitalWrite(PIN7, LOW);
+        digitalWrite(PIN8, HIGH);
+        break;
+    case 8:
+        digitalWrite(PIN1, HIGH);
+        digitalWrite(PIN2, HIGH);
+        digitalWrite(PIN3, HIGH);
+        digitalWrite(PIN4, HIGH);
+        digitalWrite(PIN5, HIGH);
+        digitalWrite(PIN6, HIGH);
+        digitalWrite(PIN7, HIGH);
+        digitalWrite(PIN8, LOW);
+        break;
+
+    default:
+        digitalWrite(PIN1, HIGH);
+        digitalWrite(PIN2, HIGH);
+        digitalWrite(PIN3, HIGH);
+        digitalWrite(PIN4, HIGH);
+        digitalWrite(PIN5, HIGH);
+        digitalWrite(PIN6, HIGH);
+        digitalWrite(PIN7, HIGH);
+        digitalWrite(PIN8, HIGH);
+        break;
+
+        break;
+    }
 }
 
 // Read and debounce the buttons from TM1638  every interval
@@ -403,7 +505,6 @@ void Brightness(void)
 
         if (IrReceiver.decode())
         {
-
             if (IrReceiver.decodedIRData.protocol == UNKNOWN)
             {
                 // Serial.println(F("Received noise or an unknown (or not yet enabled) protocol"));
@@ -438,7 +539,7 @@ void Brightness(void)
             {
                 MainMode = 2;
             }
-                }
+        }
     }
 }
 
@@ -466,6 +567,45 @@ void SetTime(void)
             Minutes++;
             break;
         }
+
+        // if (IrReceiver.decode())
+        // {
+        //     if (IrReceiver.decodedIRData.protocol == UNKNOWN)
+        //     {
+        //         // Serial.println(F("Received noise or an unknown (or not yet enabled) protocol"));
+        //         // We have an unknown protocol here, print extended info
+        //         // IrReceiver.printIRResultRawFormatted(&Serial, true);
+        //         IrReceiver.resume(); // Do it here, to preserve raw data for printing with printIRResultRawFormatted()
+        //     }
+        //     else
+        //     {
+        //         IrReceiver.resume(); // Early enable receiving of the next IR frame
+        //         IrReceiver.printIRResultShort(&Serial);
+        //         IrReceiver.printIRSendUsage(&Serial);
+        //     }
+        //     Serial.println();
+        //     if (IrReceiver.decodedIRData.command == R_BTPLUS)
+        //     {
+        //         bright++;
+        //         if (bright == 0x08)
+        //         {
+        //             bright = 0x00;
+        //         }
+        //     }
+        //     else if (IrReceiver.decodedIRData.command == R_BTMINUS)
+        //     {
+        //         bright--;
+        //         if (bright == 0xFF)
+        //         {
+        //             bright = 0x07;
+        //         }
+        //     }
+        //     else if (IrReceiver.decodedIRData.command == R_SAVE)
+        //     {
+        //         MainMode = 2;
+        //     }
+        // }
+
         if (Hours == 24)
             Hours = 0;
         if (Minutes == 59)

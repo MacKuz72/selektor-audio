@@ -42,7 +42,11 @@
 #define R_BRG 0x0  // button MODE
 #define R_BTPLUS 0xB  // button VOL+
 #define R_BTMINUS 0x9  // button VOL-
-#define R_SAVE 0x2  // button +
+#define R_SAVE 0x2  // button enter
+#define R_UP 0x1E  // button UP
+#define R_DOWN 0x6  // button DOWN
+#define R_LEFT 0x1  // button LEFT
+#define R_RIGHT 0x3  // button RIGHT
 #endif
 
 // nazwy źródeł
