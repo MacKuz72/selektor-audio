@@ -7,20 +7,21 @@
             "compilerArgs": [
                 "-MMD",
                 "-w",
+                "-Werror=return-type",
                 "-iprefix"
             ],
             "intelliSenseMode": "gcc-x64",
             "includePath": [
                 "/home/maciej/Arduino/selektor-audio",
-                "/home/maciej/.arduino15/packages/esp32/tools/esp32-arduino-libs/idf-release_v5.1-b6b4727c58/esp32/qio_qspi/include",
-                "/home/maciej/.arduino15/packages/esp32/hardware/esp32/3.0.4/cores/esp32",
-                "/home/maciej/.arduino15/packages/esp32/hardware/esp32/3.0.4/variants/esp32da",
-                "/home/maciej/.arduino15/packages/esp32/hardware/esp32/3.0.4/libraries/Wire/src",
+                "/home/maciej/.arduino15/packages/esp32/tools/esp32-arduino-libs/idf-release_v5.1-33fbade6/esp32/qio_qspi/include",
+                "/home/maciej/.arduino15/packages/esp32/hardware/esp32/3.0.5/cores/esp32",
+                "/home/maciej/.arduino15/packages/esp32/hardware/esp32/3.0.5/variants/esp32da",
+                "/home/maciej/.arduino15/packages/esp32/hardware/esp32/3.0.5/libraries/Wire/src",
                 "/home/maciej/Arduino/libraries/RTClib/src",
                 "/home/maciej/Arduino/libraries/Adafruit_BusIO",
                 "/home/maciej/Arduino/libraries/TM1638plus/src",
                 "/home/maciej/Arduino/libraries/IRremote/src",
-                "/home/maciej/.arduino15/packages/esp32/hardware/esp32/3.0.4/libraries/SPI/src",
+                "/home/maciej/.arduino15/packages/esp32/hardware/esp32/3.0.5/libraries/SPI/src",
                 "/home/maciej/.arduino15/packages/esp32/tools/esp-x32/2302/xtensa-esp32-elf/include/c++/12.2.0",
                 "/home/maciej/.arduino15/packages/esp32/tools/esp-x32/2302/xtensa-esp32-elf/include/c++/12.2.0/xtensa-esp32-elf",
                 "/home/maciej/.arduino15/packages/esp32/tools/esp-x32/2302/xtensa-esp32-elf/include/c++/12.2.0/backward",
@@ -30,7 +31,7 @@
                 "/home/maciej/.arduino15/packages/esp32/tools/esp-x32/2302/xtensa-esp32-elf/include"
             ],
             "forcedInclude": [
-                "/home/maciej/.arduino15/packages/esp32/hardware/esp32/3.0.4/cores/esp32/Arduino.h"
+                "/home/maciej/.arduino15/packages/esp32/hardware/esp32/3.0.5/cores/esp32/Arduino.h"
             ],
             "cStandard": "c11",
             "cppStandard": "c++11",

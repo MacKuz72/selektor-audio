@@ -126,6 +126,11 @@ void loop()
         sprintf(workstr, "%s%02d.%02d", opisAudio, godzina, minuta);
         tm.displayText(workstr);
 
+        //Serial.println(SelectAudio);
+        //Serial.print("PIN1=");
+        //Serial.println(digitalRead(PIN1));
+        ustawWyjscie(SelectAudio);
+
         last_loop_time = millis();
     }
 
@@ -295,7 +300,7 @@ void loop()
             SettingsMenuDisplay();
         }
     }
-    ustawWyjscie(SelectAudio);
+    
 }
 
 void ustawWyjscie(uint8_t kanal)

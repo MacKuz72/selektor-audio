@@ -1,9 +1,12 @@
+//https://randomnerdtutorials.com/esp32-pinout-reference-gpios/
+
+
 // kody pilota
 // mały czarny
 
 //definicje pinów
-#define PIN1 34
-#define PIN2 35
+#define PIN1 2
+#define PIN2 3 
 #define PIN3 32
 #define PIN4 33
 #define PIN5 25
