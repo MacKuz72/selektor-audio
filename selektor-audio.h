@@ -52,6 +52,9 @@
 #define R_RIGHT 0x3  // button RIGHT
 #define R_DATETIME 0x8  // button BAND AMS
 #define R_REDPHONE 0x13 // czerwona słuchawka
+#define R_FFR 0x7  // Przewijanie w prawo
+#define R_FFL 0x5  // Przewijanie w lewo
+#define R_USBSD 0x4 //USBSD
 #endif
 
 // nazwy źródeł

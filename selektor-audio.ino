@@ -38,6 +38,7 @@ uint8_t buttonsRead(void);
 void SetTime(void);
 void SetDate(uint8_t Hours, uint8_t Minutes);
 void ustawWyjscie(uint8_t kanal);
+void SettingsMenuDisplay(void);
 
 const int irReceiverPin = 12;
 
@@ -124,7 +125,10 @@ void loop()
         if (minuta == 59)
             minuta = 0;
         sprintf(workstr, "%s%02d.%02d", opisAudio, godzina, minuta);
-        tm.displayText(workstr);
+        if (MainMode != 9)
+        {
+            tm.displayText(workstr);
+        }
 
         // Serial.println(SelectAudio);
         // Serial.print("PIN1=");
@@ -146,47 +150,55 @@ void loop()
             tm.setLED(0, 1);
             SelectAudio = 1;
             sprintf(opisAudio, LABEL1);
+            MainMode = 2;
             break;
         case 2: // SW2
             tm.setLEDs(0x0000);
             tm.setLED(1, 1);
             SelectAudio = 2;
+            MainMode = 2;
             sprintf(opisAudio, LABEL2);
             break;
         case 4: // SW3
             tm.setLEDs(0x0000);
             tm.setLED(2, 1);
             SelectAudio = 3;
+            MainMode = 2;
             sprintf(opisAudio, LABEL3);
             break;
         case 8: // SW4
             tm.setLEDs(0x0000);
             tm.setLED(3, 1);
             SelectAudio = 4;
+            MainMode = 2;
             sprintf(opisAudio, LABEL4);
             break;
         case 16: // SW5
             tm.setLEDs(0x0000);
             tm.setLED(4, 1);
             SelectAudio = 5;
+            MainMode = 2;
             sprintf(opisAudio, LABEL5);
             break;
         case 32: // SW6
             tm.setLEDs(0x0000);
             tm.setLED(5, 1);
             SelectAudio = 6;
+            MainMode = 2;
             sprintf(opisAudio, LABEL6);
             break;
         case 64: // SW7
             tm.setLEDs(0x0000);
             tm.setLED(6, 1);
             SelectAudio = 7;
+            MainMode = 2;
             sprintf(opisAudio, LABEL7);
             break;
         case 128: // SW8
             tm.setLEDs(0x0000);
             tm.setLED(7, 1);
             SelectAudio = 8;
+            MainMode = 2;
             sprintf(opisAudio, LABEL8);
             break;
         case 129:
@@ -236,6 +248,7 @@ void loop()
             tm.setLEDs(0x0000); // all leds off
             tm.setLED(0, 1);
             SelectAudio = 1;
+            MainMode = 2;
             sprintf(opisAudio, LABEL1);
         }
         else if (IrReceiver.decodedIRData.command == R_BT2)
@@ -244,6 +257,7 @@ void loop()
             tm.setLEDs(0x0000);
             tm.setLED(1, 1);
             SelectAudio = 2;
+            MainMode = 2;
             sprintf(opisAudio, LABEL2);
         }
         else if (IrReceiver.decodedIRData.command == R_BT3)
@@ -252,6 +266,7 @@ void loop()
             tm.setLEDs(0x0000);
             tm.setLED(2, 1);
             SelectAudio = 3;
+            MainMode = 2;
             sprintf(opisAudio, LABEL3);
         }
         else if (IrReceiver.decodedIRData.command == R_BT4)
@@ -260,6 +275,7 @@ void loop()
             tm.setLEDs(0x0000);
             tm.setLED(3, 1);
             SelectAudio = 4;
+            MainMode = 2;
             sprintf(opisAudio, LABEL4);
         }
         else if (IrReceiver.decodedIRData.command == R_BT5)
@@ -268,6 +284,7 @@ void loop()
             tm.setLEDs(0x0000);
             tm.setLED(4, 1);
             SelectAudio = 5;
+            MainMode = 2;
             sprintf(opisAudio, LABEL5);
         }
         else if (IrReceiver.decodedIRData.command == R_BT6)
@@ -276,6 +293,7 @@ void loop()
             tm.setLEDs(0x0000);
             tm.setLED(5, 1);
             SelectAudio = 6;
+            MainMode = 2;
             sprintf(opisAudio, LABEL6);
         }
         else if (IrReceiver.decodedIRData.command == R_BT7)
@@ -284,6 +302,7 @@ void loop()
             tm.setLEDs(0x0000);
             tm.setLED(6, 1);
             SelectAudio = 7;
+            MainMode = 2;
             sprintf(opisAudio, LABEL7);
         }
         else if (IrReceiver.decodedIRData.command == R_BT8)
@@ -292,12 +311,29 @@ void loop()
             tm.setLEDs(0x0000);
             tm.setLED(7, 1);
             SelectAudio = 8;
+            MainMode = 2;
             sprintf(opisAudio, LABEL8);
         }
         else if (IrReceiver.decodedIRData.command == R_SET)
         {
             MainMode = 8;
             SettingsMenuDisplay();
+        }
+        else if (IrReceiver.decodedIRData.command == R_USBSD)
+        {
+            MainMode = 9;
+            tm.displayText("SLEEP   ");
+            delay(2000);
+            tm.displayText("        ");
+        }
+        else if (IrReceiver.decodedIRData.command == R_DATETIME)
+        {
+            MainMode = 2;
+            sprintf(workstr, "%02d.%02d.%02d", now.day(), now.month(), now.year());
+            Serial.println(workstr);
+            Serial.println(now.timestamp(DateTime::TIMESTAMP_DATE));
+            tm.displayText(workstr);
+            delay(5000);
         }
     }
 }
@@ -681,68 +717,80 @@ void SetDate(uint8_t Hours, uint8_t Minutes)
             break;
         }
 
+        if (IrReceiver.decode())
+        {
+            if (IrReceiver.decodedIRData.protocol == UNKNOWN)
+            {
+                // Serial.println(F("Received noise or an unknown (or not yet enabled) protocol"));
+                // We have an unknown protocol here, print extended info
+                // IrReceiver.printIRResultRawFormatted(&Serial, true);
+                IrReceiver.resume(); // Do it here, to preserve raw data for printing with printIRResultRawFormatted()
+            }
+            else
+            {
+                IrReceiver.resume(); // Early enable receiving of the next IR frame
+                IrReceiver.printIRResultShort(&Serial);
+                IrReceiver.printIRSendUsage(&Serial);
+            }
+            // Serial.println();
+            if (IrReceiver.decodedIRData.command == R_UP)
+            {
+                Days++;
+                if (Days == 32)
+                {
+                    Days = 1;
+                }
+            }
+            else if (IrReceiver.decodedIRData.command == R_DOWN)
+            {
+                Days--;
+                if (Days <= 0)
+                {
+                    Days = 31;
+                }
+            }
+            else if (IrReceiver.decodedIRData.command == R_RIGHT)
+            {
+                Months++;
+                if (Months == 13)
+                {
+                    Months = 1;
+                }
+            }
+            else if (IrReceiver.decodedIRData.command == R_LEFT)
+            {
+                Months--;
+                if (Months <= 0)
+                {
+                    Months = 12;
+                }
+            }
+            else if (IrReceiver.decodedIRData.command == R_FFR)
+            {
+                Years++;
+                if (Years == 100)
+                {
+                    Years = 0;
+                }
+            }
+            else if (IrReceiver.decodedIRData.command == R_FFL)
+            {
+                Years--;
+                if (Years <= 0)
+                {
+                    Years = 99;
+                }
+            }
 
-        // if (IrReceiver.decode())
-        // {
-        //     if (IrReceiver.decodedIRData.protocol == UNKNOWN)
-        //     {
-        //         // Serial.println(F("Received noise or an unknown (or not yet enabled) protocol"));
-        //         // We have an unknown protocol here, print extended info
-        //         // IrReceiver.printIRResultRawFormatted(&Serial, true);
-        //         IrReceiver.resume(); // Do it here, to preserve raw data for printing with printIRResultRawFormatted()
-        //     }
-        //     else
-        //     {
-        //         IrReceiver.resume(); // Early enable receiving of the next IR frame
-        //         IrReceiver.printIRResultShort(&Serial);
-        //         IrReceiver.printIRSendUsage(&Serial);
-        //     }
-        //     // Serial.println();
-        //     if (IrReceiver.decodedIRData.command == R_UP)
-        //     {
-        //         Hours++;
-        //         if (Hours == 24)
-        //         {
-        //             Hours = 0;
-        //         }
-        //     }
-        //     else if (IrReceiver.decodedIRData.command == R_DOWN)
-        //     {
-        //         Hours--;
-        //         if (Hours <= 0)
-        //         {
-        //             Hours = 23;
-        //         }
-        //     }
-        //     else if (IrReceiver.decodedIRData.command == R_RIGHT)
-        //     {
-        //         Minutes++;
-        //         if (Minutes == 59)
-        //         {
-        //             Minutes = 0;
-        //         }
-        //     }
-        //     else if (IrReceiver.decodedIRData.command == R_LEFT)
-        //     {
-        //         Hours--;
-        //         if (Minutes <= 0)
-        //         {
-        //             Minutes = 59;
-        //         }
-        //     }
-
-        //     else if (IrReceiver.decodedIRData.command == R_SAVE)
-        //     {
-        //         SetDate(Hours, Minutes);
-        //         MainMode = 2;
-        //     }
-        //     else if (IrReceiver.decodedIRData.command == R_REDPHONE)
-        //     {
-        //         MainMode = 2;
-        //     }
-        // }
-
-
+            else if (IrReceiver.decodedIRData.command == R_SAVE)
+            {
+                MainMode = 3;
+            }
+            else if (IrReceiver.decodedIRData.command == R_REDPHONE)
+            {
+                MainMode = 2;
+            }
+        }
 
         if (Days == 32)
             Days = 1;
