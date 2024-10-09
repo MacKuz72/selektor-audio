@@ -50,6 +50,8 @@
 #define R_DOWN 0x6  // button DOWN
 #define R_LEFT 0x1  // button LEFT
 #define R_RIGHT 0x3  // button RIGHT
+#define R_DATETIME 0x8  // button BAND AMS
+#define R_REDPHONE 0x13 // czerwona słuchawka
 #endif
 
 // nazwy źródeł

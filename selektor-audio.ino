@@ -126,9 +126,9 @@ void loop()
         sprintf(workstr, "%s%02d.%02d", opisAudio, godzina, minuta);
         tm.displayText(workstr);
 
-        //Serial.println(SelectAudio);
-        //Serial.print("PIN1=");
-        //Serial.println(digitalRead(PIN1));
+        // Serial.println(SelectAudio);
+        // Serial.print("PIN1=");
+        // Serial.println(digitalRead(PIN1));
         ustawWyjscie(SelectAudio);
 
         last_loop_time = millis();
@@ -300,7 +300,6 @@ void loop()
             SettingsMenuDisplay();
         }
     }
-    
 }
 
 void ustawWyjscie(uint8_t kanal)
@@ -476,6 +475,10 @@ void SettingsMenuDisplay(void)
             {
                 Brightness();
             }
+            if (IrReceiver.decodedIRData.command == R_DATETIME)
+            {
+                SetTime();
+            }
         }
     }
 }
@@ -573,48 +576,70 @@ void SetTime(void)
             break;
         }
 
-        // if (IrReceiver.decode())
-        // {
-        //     if (IrReceiver.decodedIRData.protocol == UNKNOWN)
-        //     {
-        //         // Serial.println(F("Received noise or an unknown (or not yet enabled) protocol"));
-        //         // We have an unknown protocol here, print extended info
-        //         // IrReceiver.printIRResultRawFormatted(&Serial, true);
-        //         IrReceiver.resume(); // Do it here, to preserve raw data for printing with printIRResultRawFormatted()
-        //     }
-        //     else
-        //     {
-        //         IrReceiver.resume(); // Early enable receiving of the next IR frame
-        //         IrReceiver.printIRResultShort(&Serial);
-        //         IrReceiver.printIRSendUsage(&Serial);
-        //     }
-        //     Serial.println();
-        //     if (IrReceiver.decodedIRData.command == R_BTPLUS)
-        //     {
-        //         bright++;
-        //         if (bright == 0x08)
-        //         {
-        //             bright = 0x00;
-        //         }
-        //     }
-        //     else if (IrReceiver.decodedIRData.command == R_BTMINUS)
-        //     {
-        //         bright--;
-        //         if (bright == 0xFF)
-        //         {
-        //             bright = 0x07;
-        //         }
-        //     }
-        //     else if (IrReceiver.decodedIRData.command == R_SAVE)
-        //     {
-        //         MainMode = 2;
-        //     }
-        // }
+        if (IrReceiver.decode())
+        {
+            if (IrReceiver.decodedIRData.protocol == UNKNOWN)
+            {
+                // Serial.println(F("Received noise or an unknown (or not yet enabled) protocol"));
+                // We have an unknown protocol here, print extended info
+                // IrReceiver.printIRResultRawFormatted(&Serial, true);
+                IrReceiver.resume(); // Do it here, to preserve raw data for printing with printIRResultRawFormatted()
+            }
+            else
+            {
+                IrReceiver.resume(); // Early enable receiving of the next IR frame
+                IrReceiver.printIRResultShort(&Serial);
+                IrReceiver.printIRSendUsage(&Serial);
+            }
+            // Serial.println();
+            if (IrReceiver.decodedIRData.command == R_UP)
+            {
+                Hours++;
+                if (Hours == 24)
+                {
+                    Hours = 0;
+                }
+            }
+            else if (IrReceiver.decodedIRData.command == R_DOWN)
+            {
+                Hours--;
+                if (Hours <= 0)
+                {
+                    Hours = 23;
+                }
+            }
+            else if (IrReceiver.decodedIRData.command == R_RIGHT)
+            {
+                Minutes++;
+                if (Minutes == 59)
+                {
+                    Minutes = 0;
+                }
+            }
+            else if (IrReceiver.decodedIRData.command == R_LEFT)
+            {
+                Hours--;
+                if (Minutes <= 0)
+                {
+                    Minutes = 59;
+                }
+            }
 
-        if (Hours == 24)
-            Hours = 0;
-        if (Minutes == 59)
-            Minutes = 0;
+            else if (IrReceiver.decodedIRData.command == R_SAVE)
+            {
+                SetDate(Hours, Minutes);
+                MainMode = 2;
+            }
+            else if (IrReceiver.decodedIRData.command == R_REDPHONE)
+            {
+                MainMode = 2;
+            }
+        }
+
+        // if (Hours == 24)
+        //     Hours = 0;
+        // if (Minutes == 59)
+        //     Minutes = 0;
         sprintf(workstr, "tS.  %02d.%02d", Hours, Minutes);
         tm.displayText(workstr);
         buttons = 0;
@@ -655,6 +680,69 @@ void SetDate(uint8_t Hours, uint8_t Minutes)
             Years++;
             break;
         }
+
+
+        // if (IrReceiver.decode())
+        // {
+        //     if (IrReceiver.decodedIRData.protocol == UNKNOWN)
+        //     {
+        //         // Serial.println(F("Received noise or an unknown (or not yet enabled) protocol"));
+        //         // We have an unknown protocol here, print extended info
+        //         // IrReceiver.printIRResultRawFormatted(&Serial, true);
+        //         IrReceiver.resume(); // Do it here, to preserve raw data for printing with printIRResultRawFormatted()
+        //     }
+        //     else
+        //     {
+        //         IrReceiver.resume(); // Early enable receiving of the next IR frame
+        //         IrReceiver.printIRResultShort(&Serial);
+        //         IrReceiver.printIRSendUsage(&Serial);
+        //     }
+        //     // Serial.println();
+        //     if (IrReceiver.decodedIRData.command == R_UP)
+        //     {
+        //         Hours++;
+        //         if (Hours == 24)
+        //         {
+        //             Hours = 0;
+        //         }
+        //     }
+        //     else if (IrReceiver.decodedIRData.command == R_DOWN)
+        //     {
+        //         Hours--;
+        //         if (Hours <= 0)
+        //         {
+        //             Hours = 23;
+        //         }
+        //     }
+        //     else if (IrReceiver.decodedIRData.command == R_RIGHT)
+        //     {
+        //         Minutes++;
+        //         if (Minutes == 59)
+        //         {
+        //             Minutes = 0;
+        //         }
+        //     }
+        //     else if (IrReceiver.decodedIRData.command == R_LEFT)
+        //     {
+        //         Hours--;
+        //         if (Minutes <= 0)
+        //         {
+        //             Minutes = 59;
+        //         }
+        //     }
+
+        //     else if (IrReceiver.decodedIRData.command == R_SAVE)
+        //     {
+        //         SetDate(Hours, Minutes);
+        //         MainMode = 2;
+        //     }
+        //     else if (IrReceiver.decodedIRData.command == R_REDPHONE)
+        //     {
+        //         MainMode = 2;
+        //     }
+        // }
+
+
 
         if (Days == 32)
             Days = 1;
